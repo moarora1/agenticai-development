@@ -4,22 +4,22 @@
  */
 export default async function decorate(block) {
   // Extract elements using semantic selectors
-  const picture = block.querySelector('picture');
-  const h1 = block.querySelector('h1');
-  const h2 = block.querySelector('h2');
-  const links = block.querySelectorAll('a');
+  const picture = div.querySelector('picture');
+  const h1 = div.querySelector('h1');
+  const h2 = div.querySelector('h2');
+  const links = div.querySelectorAll('a');
 
   // Create the hero-banner structure
   const heroContent = document.createElement('div');
   heroContent.className = 'hero-banner-content';
 
   // Add background image
-  if (picture) {
+
     const heroBackground = document.createElement('div');
-    heroBackground.className = 'hero-banner-background-1';
+    heroBackground.className = 'hero-banner-background';
     heroBackground.append(picture);
     block.prepend(heroBackground);
-  }
+ 
 
   // Add text content wrapper
   const heroText = document.createElement('div');
