@@ -180,18 +180,6 @@
     ]
   },
   {
-    "id": "embed",
-    "fields": [
-      {
-        "component": "text-input",
-        "valueType": "string",
-        "name": "url",
-        "label": "Embed URL",
-        "description": "Paste Instagram, YouTube, Twitter, or other social media URL"
-      }
-    ]
-  },
-  {
     "id": "fragment",
     "fields": [
       {
@@ -224,18 +212,6 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "twitter",
-    "fields": [
-      {
-        "component": "text-input",
-        "valueType": "string",
-        "name": "url",
-        "label": "Twitter Profile or Timeline URL",
-        "description": "Enter a Twitter/X profile URL, username (with or without @), or timeline URL"
       }
     ]
   }
