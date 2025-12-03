@@ -49,7 +49,9 @@
         "title",
         "columns",
         "fragment",
-         "embed"
+        "cards",
+        "hero",
+        "embed"
       ]
     }
   ]

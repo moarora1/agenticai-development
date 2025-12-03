@@ -124,7 +124,30 @@ If Universal Editor detected, follow **Option A**. Otherwise, follow **Option B*
 
 **Note:** Always include an empty `filters: []` array, even for simple blocks. This provides consistency and allows for future extensibility.
 
-4. Use the boilerplate structure for JS and CSS files:
+4. **Register the block in `models/_section.json`** to make it available for authors to add to sections:
+   - Open `models/_section.json`
+   - Add your block ID to the `components` array within the `filters` section
+   - Example: If creating a "hero" block, add `"hero"` to the array
+   - The block ID should match the `id` field in your block's definition
+
+   ```json
+   "filters": [
+     {
+       "id": "section",
+       "components": [
+         "text",
+         "image",
+         "button",
+         "title",
+         "columns",
+         "hero",      // ← Add your new block here
+         "embed"
+       ]
+     }
+   ]
+   ```
+
+5. Use the boilerplate structure for JS and CSS files:
    - JS file exports a default `decorate(block)` function (can be async if needed)
    - CSS file targets the `.{block-name}` class
 

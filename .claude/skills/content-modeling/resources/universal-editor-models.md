@@ -697,6 +697,126 @@ Some blocks need configuration data rather than content:
 </div>
 ```
 
+## Registering Blocks in Sections
+
+After creating a new block component model, you must register it in `models/_section.json` to make it available for authors to add to page sections.
+
+### Section Filters
+
+The `_section.json` file defines what components are allowed within page sections using a `filters` array:
+
+```json
+{
+  "definitions": [
+    {
+      "title": "Section",
+      "id": "section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "model": "section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "section",
+      "fields": [
+        {
+          "component": "text",
+          "name": "name",
+          "label": "Section Name"
+        },
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Style",
+          "options": [...]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "text",
+        "image",
+        "button",
+        "title",
+        "columns",
+        "hero",      // ← Block IDs registered here
+        "embed"      // ← Add new block IDs to this array
+      ]
+    }
+  ]
+}
+```
+
+### Adding a New Block to Sections
+
+**Step 1:** Identify your block ID from `_blockname.json`:
+
+```json
+{
+  "definitions": [{
+    "title": "My New Block",
+    "id": "my-new-block",  // ← This is the block ID
+    ...
+  }]
+}
+```
+
+**Step 2:** Add the block ID to `models/_section.json`:
+
+```json
+"filters": [
+  {
+    "id": "section",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "title",
+      "columns",
+      "hero",
+      "embed",
+      "my-new-block"  // ← Add your block ID here
+    ]
+  }
+]
+```
+
+### When to Register
+
+**Always register when:**
+- Creating a new block that authors should be able to add to pages
+- The block is intended for general content authoring
+- The block is complete and ready for author use
+
+**Skip registration when:**
+- Creating auto-blocks that are automatically inserted by code
+- Creating deprecated blocks that should no longer be used
+- Creating special-purpose blocks used only in specific contexts (not general page sections)
+
+### Testing Registration
+
+After registering a block:
+
+1. Open the Universal Editor
+2. Create or edit a page
+3. Click "Add Component" in a section
+4. Your block should appear in the component picker
+5. If it doesn't appear, verify:
+   - Block ID in `_section.json` matches `_blockname.json`
+   - No typos in the block ID
+   - The block's `_blockname.json` file is valid JSON
+
 ## Best Practices
 
 ### 1. Minimize Field Count

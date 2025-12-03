@@ -191,6 +191,47 @@ This JSON file must follow the structure defined at https://www.aem.live/develop
 
 **Note:** Even simple standalone blocks should include an empty `filters: []` array for consistency and future extensibility.
 
+#### Registering Blocks in Sections
+
+After creating a new block with Universal Editor, you must register it in `models/_section.json` to make it available for authors to add to page sections:
+
+1. Open `models/_section.json`
+2. Locate the `filters` array
+3. Add your block's ID to the `components` array
+4. The block ID must match the `id` field from your block's `_blockname.json` definition
+
+**Example `models/_section.json`:**
+
+```json
+{
+  "definitions": [...],
+  "models": [...],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "text",
+        "image",
+        "button",
+        "title",
+        "columns",
+        "hero",      // ← Registered blocks appear here
+        "embed"      // ← Add new block IDs to this array
+      ]
+    }
+  ]
+}
+```
+
+**Without this registration:**
+- Authors won't be able to add your block to sections in the Universal Editor
+- The block won't appear in the component picker
+- Your block code will exist but won't be usable by authors
+
+**When to register:**
+- Always register new blocks that authors should be able to add to pages
+- Skip registration only for auto-blocks or deprecated blocks that shouldn't be directly authored
+
 #### Row-Per-Field DOM Structure
 
 **CRITICAL:** Universal Editor creates one row per model field, NOT one row with multiple cells.
@@ -329,6 +370,7 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 - [ ] Determine if block needs `_blockname.json` (has authorable fields?)
 - [ ] If yes: Create `_blockname.json` with definitions and models
 - [ ] Model fields follow naming conventions (Alt, Title, Text, Type suffixes)
+- [ ] Register block ID in `models/_section.json` filters array
 - [ ] Decoration code extracts from rows (not cells)
 - [ ] Plain text fields converted to semantic HTML (H1, H2, etc.)
 - [ ] Test content created matching row-per-field structure
