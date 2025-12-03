@@ -16,7 +16,7 @@ export default async function decorate(block) {
   // Add background image
   if (picture) {
     const heroBackground = document.createElement('div');
-    heroBackground.className = 'hero-banner-background';
+    heroBackground.className = 'hero-banner-background-1';
     heroBackground.append(picture);
     block.prepend(heroBackground);
   }
