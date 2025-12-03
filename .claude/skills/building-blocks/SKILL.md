@@ -79,6 +79,70 @@ Review the implementation patterns in similar blocks to inform your approach.
 
 ### 3. Create or Modify Block Structure
 
+**First, determine if this is a Universal Editor project:**
+
+Check for indicators:
+- `component-models.json` or `component-definitions.json` in project root
+- Existing `_blockname.json` files in block directories
+
+If Universal Editor detected, follow **Option A**. Otherwise, follow **Option B**.
+
+#### Option A: Universal Editor Projects
+
+**For new blocks:**
+
+1. Create directory: `blocks/{block-name}/`
+2. Create files: `{block-name}.js`, `{block-name}.css`, and `_{block-name}.json`
+3. Create the component model configuration file `_{block-name}.json`:
+
+```json
+{
+  "definitions": [{
+    "title": "Block Display Name",
+    "id": "block-name",
+    "plugins": {
+      "xwalk": {
+        "page": {
+          "resourceType": "core/franklin/components/block/v1/block",
+          "template": {
+            "name": "Block Name",
+            "model": "block-name"
+          }
+        }
+      }
+    }
+  }],
+  "models": [{
+    "id": "block-name",
+    "fields": [
+      // Field definitions from content model
+    ]
+  }],
+  "filters": []
+}
+```
+
+**Note:** Always include an empty `filters: []` array, even for simple blocks. This provides consistency and allows for future extensibility.
+
+4. Use the boilerplate structure for JS and CSS files:
+   - JS file exports a default `decorate(block)` function (can be async if needed)
+   - CSS file targets the `.{block-name}` class
+
+**For existing blocks:**
+
+1. Locate the existing block directory in `blocks/{block-name}/`
+2. Review the current `_{block-name}.json` model configuration
+3. Review the current JavaScript and CSS implementation
+4. Understand how the row-per-field structure is being processed
+
+**CRITICAL for Universal Editor:**
+- The `_{block-name}.json` file defines what authors can edit
+- Each model field creates ONE ROW in the block DOM
+- Fields with suffixes (Alt, Title, Text, Type) are embedded as attributes
+- Your decoration code must extract from `rows[index]`, not `rows[0].children[index]`
+
+#### Option B: Document Authoring Projects
+
 **For new blocks:**
 
 1. Create directory: `blocks/{block-name}/`
@@ -101,6 +165,35 @@ Follow patterns and conventions in `resources/js-guidelines.md`:
 - Keep decoration logic focused and single-purpose
 - Handle variants appropriately (check block.classList for variant classes)
 - Follow established patterns from similar blocks
+
+**For Universal Editor projects specifically:**
+
+1. **Extract from rows, not cells:**
+   ```javascript
+   const rows = [...block.children];
+   const picture = rows[0]?.querySelector('picture');  // ✅ Correct
+   const cells = [...rows[0].children];  // ❌ Wrong for Universal Editor
+   ```
+
+2. **Create semantic HTML from plain text fields:**
+   ```javascript
+   const titleText = rows[1]?.textContent?.trim();
+   if (titleText) {
+     const h1 = document.createElement('h1');
+     h1.textContent = titleText;
+     // Add to DOM
+   }
+   ```
+
+3. **Handle embedded fields correctly:**
+   - `imageAlt` fields are already in the img alt attribute
+   - `linkText` fields are already in the anchor text
+   - Don't look for separate rows for these fields
+
+4. **Map row index to model field order:**
+   - Row 0 = first field in model
+   - Row 1 = second field (unless first had collapse suffix)
+   - Remember: collapse suffix fields don't create visible rows
 
 **Read `resources/js-guidelines.md` for detailed examples, code standards, and best practices.**
 

@@ -231,6 +231,337 @@ export default async function decorate(block) {
 
 **Note:** Try to avoid this. Multiple content patterns increase complexity. Work with content authors to agree on a single, clear content model when possible.
 
+## Universal Editor Specific Patterns
+
+**For Universal Editor projects ONLY.** Skip this section for document authoring projects.
+
+Universal Editor uses a component model approach where each field in `_blockname.json` creates **one row** in the block's DOM. This is fundamentally different from document authoring where content is organized in table cells.
+
+### Row-Per-Field Structure
+
+**CRITICAL:** Extract content from ROWS, not cells.
+
+```javascript
+// ✅ CORRECT for Universal Editor
+export default async function decorate(block) {
+  const rows = [...block.children];
+  
+  // Each row is one field from the model
+  const picture = rows[0]?.querySelector('picture');  // Row 0: image field
+  const titleText = rows[1]?.textContent?.trim();     // Row 1: title field
+  const richTextRow = rows[2];                        // Row 2: text field
+}
+
+// ❌ WRONG - This is document authoring pattern
+export default async function decorate(block) {
+  const rows = [...block.children];
+  const cells = [...rows[0].children];  // Don't do this for Universal Editor
+  const picture = cells[0]?.querySelector('picture');
+}
+```
+
+### Mapping Rows to Model Fields
+
+The row index corresponds to the field order in your `_blockname.json` model:
+
+**Example model:**
+```json
+{
+  "fields": [
+    {"name": "image"},      // Creates row 0
+    {"name": "imageAlt"},   // Embedded in img alt, NO row created
+    {"name": "title"},      // Creates row 1
+    {"name": "subtitle"},   // Creates row 2
+    {"name": "text"}        // Creates row 3
+  ]
+}
+```
+
+**Corresponding decoration code:**
+```javascript
+const rows = [...block.children];
+const picture = rows[0]?.querySelector('picture');  // image field
+// No row[1] for imageAlt - it's embedded in the img alt attribute
+const titleText = rows[1]?.textContent?.trim();     // title field
+const subtitleText = rows[2]?.textContent?.trim();  // subtitle field
+const richTextRow = rows[3];                        // text field
+```
+
+### Field Collapse Patterns
+
+Fields with specific suffixes are **embedded as attributes**, not separate rows:
+
+**Alt suffix:**
+```json
+{"name": "image"},
+{"name": "imageAlt"}  // Embedded as img alt, no separate row
+```
+
+```javascript
+// imageAlt is already in the alt attribute
+const picture = rows[0]?.querySelector('picture');
+const img = picture?.querySelector('img');
+console.log(img?.alt);  // Contains imageAlt value
+```
+
+**Text suffix:**
+```json
+{"name": "cta"},
+{"name": "ctaText"}  // Embedded as link text, no separate row
+```
+
+```javascript
+const link = rows[N]?.querySelector('a');
+console.log(link?.textContent);  // Contains ctaText value
+```
+
+**Title suffix:**
+```json
+{"name": "link"},
+{"name": "linkTitle"}  // Embedded as title attribute, no separate row
+```
+
+```javascript
+const link = rows[N]?.querySelector('a');
+console.log(link?.title);  // Contains linkTitle value
+```
+
+**Type suffix:**
+```json
+{"name": "heading"},
+{"name": "headingType"}  // Controls element type (h1-h6), no separate row
+```
+
+```javascript
+// Universal Editor already creates the correct element (H1, H2, etc.)
+const heading = rows[N]?.querySelector('h1, h2, h3, h4, h5, h6');
+```
+
+### Creating Semantic HTML from Plain Text
+
+Universal Editor text fields contain **plain text** that needs conversion to semantic HTML:
+
+```javascript
+// ❌ WRONG - Looking for existing H1
+const h1 = rows[1]?.querySelector('h1');
+
+// ✅ CORRECT - Create H1 from plain text
+const titleText = rows[1]?.textContent?.trim();
+if (titleText) {
+  const h1 = document.createElement('h1');
+  h1.className = 'block-title';
+  h1.textContent = titleText;
+  // Add to your transformed DOM
+}
+```
+
+**For multiple heading fields:**
+```javascript
+const titleText = rows[1]?.textContent?.trim();
+const subtitleText = rows[2]?.textContent?.trim();
+
+if (titleText) {
+  const h1 = document.createElement('h1');
+  h1.textContent = titleText;
+  container.append(h1);
+}
+
+if (subtitleText) {
+  const h2 = document.createElement('h2');
+  h2.textContent = subtitleText;
+  container.append(h2);
+}
+```
+
+### Handling Richtext Fields
+
+Richtext fields already contain HTML (paragraphs, links, etc.):
+
+```javascript
+const richTextRow = rows[3];
+
+// Extract existing HTML elements
+const paragraphs = richTextRow.querySelectorAll('p');
+const links = richTextRow.querySelectorAll('a');
+
+// Re-use these elements in your transformed DOM
+const contentDiv = document.createElement('div');
+contentDiv.className = 'block-content';
+contentDiv.append(...paragraphs);
+```
+
+**Separating content from CTAs in richtext:**
+```javascript
+const richTextRow = rows[3];
+const description = document.createElement('div');
+const ctaWrapper = document.createElement('div');
+
+// Extract paragraphs for description
+const paragraphs = richTextRow.querySelectorAll('p');
+paragraphs.forEach((p) => {
+  const hasLinks = p.querySelector('a');
+  if (!hasLinks) {
+    // Plain paragraph - add to description
+    description.append(p.cloneNode(true));
+  }
+});
+
+// Extract links for CTAs
+const links = richTextRow.querySelectorAll('a');
+links.forEach((link, index) => {
+  const ctaLink = link.cloneNode(true);
+  // First link is primary, second is secondary
+  ctaLink.className = index === 0 ? 'button primary' : 'button secondary';
+  ctaWrapper.append(ctaLink);
+});
+```
+
+### Element Grouping
+
+Fields using underscore naming (`groupName_fieldName`) are combined into one row:
+
+**Model:**
+```json
+{
+  "fields": [
+    {"name": "title"},
+    {"name": "cta_link"},    // Grouped
+    {"name": "cta_text"},    // Grouped
+    {"name": "cta_type"}     // Grouped
+  ]
+}
+```
+
+**Generated structure (2 rows total):**
+```html
+<div class="block">
+  <div><div>Title Text</div></div>                          <!-- Row 0: title -->
+  <div><div>                                                <!-- Row 1: cta group -->
+    <p><a href="/page" class="button primary">Click</a></p>
+  </div></div>
+</div>
+```
+
+**Decoration code:**
+```javascript
+const titleText = rows[0]?.textContent?.trim();
+const ctaRow = rows[1];  // Contains grouped cta fields
+const ctaLink = ctaRow?.querySelector('a');
+```
+
+### Complete Universal Editor Example
+
+**Model (`_hero-banner.json`):**
+```json
+{
+  "fields": [
+    {"component": "reference", "name": "image"},
+    {"component": "text-input", "name": "imageAlt"},
+    {"component": "text-input", "name": "title"},
+    {"component": "text-input", "name": "subtitle"},
+    {"component": "richtext", "name": "text"}
+  ]
+}
+```
+
+**Generated DOM (4 visible rows from 5 fields):**
+```html
+<div class="hero-banner">
+  <div><div><picture><img alt="..." /></picture></div></div>  <!-- Row 0 -->
+  <div><div>Welcome to Our Platform</div></div>               <!-- Row 1 -->
+  <div><div>Transforming Ideas into Reality</div></div>       <!-- Row 2 -->
+  <div><div>                                                  <!-- Row 3 -->
+    <p>Description text here</p>
+    <p><a href="/learn-more">Learn More</a></p>
+  </div></div>
+</div>
+```
+
+**Decoration code:**
+```javascript
+export default async function decorate(block) {
+  // Extract from rows
+  const rows = [...block.children];
+  const picture = rows[0]?.querySelector('picture');
+  const titleText = rows[1]?.textContent?.trim();
+  const subtitleText = rows[2]?.textContent?.trim();
+  const richTextRow = rows[3];
+
+  // Clear block
+  block.textContent = '';
+
+  // Add background image
+  if (picture) {
+    const bg = document.createElement('div');
+    bg.className = 'hero-banner-background';
+    bg.append(picture);
+    block.append(bg);
+  }
+
+  // Create content container
+  const content = document.createElement('div');
+  content.className = 'hero-banner-content';
+
+  // Create H1 from plain text
+  if (titleText) {
+    const h1 = document.createElement('h1');
+    h1.className = 'hero-banner-title';
+    h1.textContent = titleText;
+    content.append(h1);
+  }
+
+  // Create H2 from plain text
+  if (subtitleText) {
+    const h2 = document.createElement('h2');
+    h2.className = 'hero-banner-subtitle';
+    h2.textContent = subtitleText;
+    content.append(h2);
+  }
+
+  // Extract description and CTAs from richtext
+  if (richTextRow) {
+    const description = document.createElement('div');
+    description.className = 'hero-banner-description';
+    
+    const paragraphs = richTextRow.querySelectorAll('p');
+    paragraphs.forEach((p) => {
+      if (!p.querySelector('a') && p.textContent.trim()) {
+        description.append(p.cloneNode(true));
+      }
+    });
+    
+    if (description.children.length > 0) {
+      content.append(description);
+    }
+
+    const links = richTextRow.querySelectorAll('a');
+    if (links.length > 0) {
+      const ctaWrapper = document.createElement('div');
+      ctaWrapper.className = 'hero-banner-ctas';
+      
+      links.forEach((link, index) => {
+        const cta = link.cloneNode(true);
+        cta.className = index === 0 ? 'button primary' : 'button secondary';
+        ctaWrapper.append(cta);
+      });
+      
+      content.append(ctaWrapper);
+    }
+  }
+
+  block.append(content);
+}
+```
+
+### Key Takeaways for Universal Editor
+
+1. **Extract from rows[index]**, not rows[0].children[index]
+2. **Count visible rows** = model fields - embedded fields (Alt, Title, Text, Type suffixes)
+3. **Create semantic HTML** from plain text fields (H1, H2, etc.)
+4. **Re-use richtext HTML** that's already in the DOM
+5. **Check row index carefully** - embedded fields don't create visible rows
+6. **Use console.log(block.innerHTML)** during development to verify structure
+
 ## Code Style
 
 This project uses Airbnb ESLint configuration with some modifications:

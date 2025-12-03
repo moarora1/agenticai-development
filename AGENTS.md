@@ -30,6 +30,7 @@ The repository provides the basic structure, blocks, and configuration needed to
     └── {blockName}/   - Individual block directory
         ├── {blockName}.js      # Block's JavaScript
         └── {blockName}.css     # Block's styles
+        └── _{blockName}.json   # Universal Editor configuration (optional - only for blocks with authorable fields for Universal Editor)
 ├── styles/          # Global styles and CSS
     ├── styles.css          # Minimal global styling and layout for your website required for LCP
     └── lazy-styles.css     # Additional global styling and layout for below the fold/post LCP content
@@ -69,6 +70,16 @@ The repository provides the basic structure, blocks, and configuration needed to
 
 ## Key Concepts
 
+### Content Sources
+
+This project uses **Universal Editor** as its content authoring source. Universal Editor is a component-based authoring interface within AEM as a Cloud Service that provides authors with a visual editing experience.
+
+**Key differences from document-based authoring (Google Docs/SharePoint):**
+- Content is defined through **component models** (JSON configuration files)
+- Each model field creates a **separate row** in the block's DOM structure (row-per-field pattern)
+- Authors work with **form fields** rather than tables in documents
+- Block configuration uses `_blockname.json` files at the block level
+
 ### Content
 
 CMS authored content is a key part of every AEM Website. The content of a page is broken into sections. Sections can have default content (text, headings, links, etc.) as well as content in blocks.
@@ -77,23 +88,209 @@ You can create static content for testing in a dedicated drafts folder. If you d
 Background on content structure https://www.aem.live/developer/markup-sections-blocks
 You can inspect the contents of any page with `curl http://localhost:3000/path/to/page` and `curl http://localhost:3000/path/to/page.md`
 
+### Universal Editor Component Models
+
+**For Universal Editor projects only:**
+
+Blocks require component model definitions that specify what fields authors can edit. These models follow specific naming and structuring conventions:
+
+#### Block File Structure
+
+Each block requires at minimum two files:
+1. **`{blockName}.js`** - JavaScript decoration logic (required)
+2. **`{blockName}.css`** - Block-specific styles (required)
+3. **`_{blockName}.json`** - Universal Editor configuration (conditional - see below)
+
+**When to create `_{blockName}.json`:**
+
+This file is **ONLY for Universal Editor projects** (not document authoring) and should be created when:
+- ✅ The block has **authorable content fields** (text, images, links, richtext, etc.)
+- ✅ Authors need to **edit structured data** through the Universal Editor interface
+- ✅ The block requires a **defined content model** with specific field types
+
+**Examples of blocks that NEED `_{blockName}.json`:**
+- Hero banner (has image, title, subtitle, description fields)
+- Card (has image, title, description, CTA)
+- Quote (has quote text, author, attribution)
+- Teaser (has image, heading, description, CTA)
+
+**When NOT to create `_{blockName}.json`:**
+
+Skip this file when:
+- ❌ **Container blocks** - The block is just a wrapper for child components that have their own models
+- ❌ **Layout/presentation blocks** - The block only provides styling/structure with no editable content (e.g., columns, tabs wrapper)
+- ❌ **Auto-blocks** - Blocks generated programmatically from content patterns in `buildAutoBlocks()`
+- ❌ **Static blocks** - Blocks with hardcoded content that authors don't modify
+- ❌ **Document authoring projects** - These use table-based authoring, not component models
+
+**Examples of blocks that DO NOT need `_{blockName}.json`:**
+- Columns block (layout container, uses classes for configuration)
+- Tabs (container for tab sections, each section is the content unit)
+- Fragment (loads external content, no direct fields)
+- Auto-generated breadcrumbs (created from page hierarchy)
+
+The `_{blockName}.json` file enables content authoring in the Universal Editor. **Only create this file if your block has authorable fields that authors need to edit.**
+
+This JSON file must follow the structure defined at https://www.aem.live/developer/component-model-definitions and contains:
+- **Definitions**: Block metadata (title, id, resource type, template reference)
+- **Models**: Field definitions (types, labels, value types)
+- **Filters**: Constraints on authoring behavior (use empty array `[]` for simple blocks)
+
+**Example `_hero-banner.json`:**
+
+```json
+{
+  "definitions": [{
+    "title": "Hero Banner",
+    "id": "hero-banner",
+    "plugins": {
+      "xwalk": {
+        "page": {
+          "resourceType": "core/franklin/components/block/v1/block",
+          "template": {
+            "name": "Hero Banner",
+            "model": "hero-banner"
+          }
+        }
+      }
+    }
+  }],
+  "models": [{
+    "id": "hero-banner",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background Image",
+        "multi": false
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text"
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "label": "Description",
+        "valueType": "string"
+      }
+    ]
+  }],
+  "filters": []
+}
+```
+
+**Note:** Even simple standalone blocks should include an empty `filters: []` array for consistency and future extensibility.
+
+#### Row-Per-Field DOM Structure
+
+**CRITICAL:** Universal Editor creates one row per model field, NOT one row with multiple cells.
+
+Given the model above, Universal Editor generates this DOM structure:
+
+```html
+<div class="hero-banner">
+  <div><div><picture>...</picture></div></div>  <!-- Row 0: image field -->
+  <div><div>Welcome</div></div>                 <!-- Row 1: title field -->
+  <div><div><p>Description...</p></div></div>   <!-- Row 2: text field -->
+</div>
+```
+
+**Key points:**
+- Each field in the model = one row in the block
+- Fields with specific suffixes (like `imageAlt`) are embedded as attributes, not separate rows
+- Plain text fields contain text that needs conversion to semantic HTML (H1, H2)
+- Richtext fields contain HTML already
+
+Your block decoration code must:
+1. Extract content from **separate rows** (rows[0], rows[1], rows[2]) NOT cells
+2. Create semantic HTML elements from plain text (e.g., convert title text to H1)
+3. Handle embedded fields (imageAlt becomes img alt attribute)
+
+**Example decoration code:**
+
+```javascript
+export default async function decorate(block) {
+  const rows = [...block.children];
+  
+  // Extract from ROWS, not cells
+  const picture = rows[0]?.querySelector('picture');
+  const titleText = rows[1]?.textContent?.trim();
+  const richTextRow = rows[2];
+  
+  // Create semantic HTML from plain text
+  if (titleText) {
+    const h1 = document.createElement('h1');
+    h1.textContent = titleText;
+    // ... add to DOM
+  }
+}
+```
+
+#### Field Naming Conventions
+
+Universal Editor uses field name suffixes to determine rendering behavior:
+
+**Field Collapse Suffixes** (embedded as attributes, not separate rows):
+- `Alt` → Becomes alt attribute on related image field
+- `Title` → Becomes title attribute on related link/button field
+- `Text` → Becomes text content of related link/button field
+- `Type` → Controls semantic element type (h1-h6) or button styling
+
+**Element Grouping** (combines multiple fields into one cell):
+- Use underscore to group: `groupName_fieldName`
+- Example: `cta_link`, `cta_text`, `cta_type` → all grouped in one cell
+
+**For detailed patterns, see:** https://www.aem.live/developer/component-model-definitions
+
 ### Blocks
 
 Blocks are the re-usable building blocks of AEM. Blocks add styling and functionality to content. Each block has an initial content structure it expects, and transforms the html in the block using DOM APIs to render a final structure. 
 
-The initial content sturcture is important because it impacts how the author will create the content and how you will write your code to decorate it. In some sense, you can think of this structure as the contract for your block between the author and the developer. You should decide on this initial structure before writing any code, and be careful when making changes to code that makes assumptions about that structure as it could break existing pages.
+The initial content structure is important because it impacts how the author will create the content and how you will write your code to decorate it. In some sense, you can think of this structure as the contract for your block between the author and the developer. You should decide on this initial structure before writing any code, and be careful when making changes to code that makes assumptions about that structure as it could break existing pages.
+
+#### Block Structure for Universal Editor
+
+**For Universal Editor projects, the block structure follows a row-per-field pattern:**
+
+- Each field defined in `_blockname.json` creates **one row** in the block
+- Fields with specific suffixes (Alt, Title, Text, Type) are embedded as attributes
+- Plain text fields need conversion to semantic HTML in decoration code
+- Richtext fields already contain HTML
+
+**Example:** A block with 4 fields (image, imageAlt, title, text) produces 3 visible rows:
+- Row 0: Image (with imageAlt embedded in img alt attribute)
+- Row 1: Title (plain text)
+- Row 2: Text (rich HTML)
 
 The block javascript should export a default function which is called to perform the block decoration:
 
-```
+```javascript
 /**
  * loads and decorates the block
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
-  // 1. Load dependencies
-  // 2. Extract configuration, if applicable
-  // 3. Transform DOM
+  // For Universal Editor projects:
+  // 1. Extract content from ROWS (not cells)
+  //    const rows = [...block.children];
+  //    const picture = rows[0]?.querySelector('picture');
+  //    const titleText = rows[1]?.textContent?.trim();
+  //
+  // 2. Create semantic HTML from plain text fields
+  //    const h1 = document.createElement('h1');
+  //    h1.textContent = titleText;
+  //
+  // 3. Transform DOM to final structure
   // 4. Add event listeners
   // 5. Set loaded status
 }
@@ -124,8 +321,17 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 ### Block Development
 - Each block in the `blocks/` directory should be self-contained and re-useable
 - Include CSS and JS files for each block
-- Follow the naming convention: `blockname.css`, `blockname.js`
+- **For Universal Editor:** Include `_blockname.json` only if block has authorable fields (see Block File Structure section)
+- Follow the naming convention: `blockname.css`, `blockname.js`, `_blockname.json` (if needed)
 - Blocks should be responsive and accessible by default
+
+**Universal Editor Block Checklist:**
+- [ ] Determine if block needs `_blockname.json` (has authorable fields?)
+- [ ] If yes: Create `_blockname.json` with definitions and models
+- [ ] Model fields follow naming conventions (Alt, Title, Text, Type suffixes)
+- [ ] Decoration code extracts from rows (not cells)
+- [ ] Plain text fields converted to semantic HTML (H1, H2, etc.)
+- [ ] Test content created matching row-per-field structure
 
 ### Styling
 - Global styles go in `styles/styles.css`

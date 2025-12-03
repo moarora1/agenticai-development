@@ -35,11 +35,77 @@ A good content model is:
 
 Before designing a content model, ensure you understand:
 
-1. **Block Purpose**: What is this block meant to accomplish?
-2. **Content Requirements**: What content elements are needed (images, text, links, etc.)?
-3. **User Experience**: How should this block appear and function on the page?
+1. **Project Type**: Is this a document-based authoring project (Google Docs/SharePoint) or Universal Editor project?
+   - Check for `component-models.json`, `component-definitions.json`, or `_blockname.json` files → Universal Editor
+   - Check for `.docx` or `.md` content files → Document authoring
+2. **Block Purpose**: What is this block meant to accomplish?
+3. **Content Requirements**: What content elements are needed (images, text, links, etc.)?
+4. **User Experience**: How should this block appear and function on the page?
+
+**CRITICAL:** Universal Editor and document authoring have completely different content modeling approaches. Use the correct workflow for your project type.
 
 ## The Content Modeling Process
+
+### Step 0: Identify Project Type
+
+**First, determine whether this is a Universal Editor or document authoring project:**
+
+1. Check for Universal Editor indicators:
+   - `component-models.json` file in project root
+   - `component-definitions.json` file in project root  
+   - Existing `_blockname.json` files in block directories
+
+2. If Universal Editor detected → Use Universal Editor workflow (skip to Step 0.1)
+3. If document authoring → Use canonical model workflow (skip to Step 1)
+
+#### Step 0.1: Universal Editor Content Modeling
+
+**For Universal Editor projects, follow this different approach:**
+
+Universal Editor uses component model JSON files rather than table-based structures. The content model defines:
+- Field types (text-input, richtext, reference, etc.)
+- Field names (with naming conventions for collapse and grouping)
+- Field labels and descriptions for authors
+
+**Critical concepts:**
+- Each model field creates **one row** in the DOM (row-per-field pattern)
+- Fields with suffixes (Alt, Title, Text, Type) are **embedded as attributes**, not separate rows
+- Use **underscores** for element grouping (`groupName_fieldName`)
+- Model lives in `_blockname.json` file at block level
+
+**Read the Universal Editor resource:**
+
+Read `resources/universal-editor-models.md` for complete guidance on:
+- Creating `_blockname.json` files
+- Field component types
+- Row-per-field structure
+- Field naming conventions (collapse and grouping)
+- Multi-fields and container blocks
+- Best practices for Universal Editor models
+
+**After reading, design your model following these patterns:**
+
+1. Choose appropriate field components (text-input, richtext, reference, etc.)
+2. Apply naming conventions:
+   - Use `imageAlt` for image alt text (embedded)
+   - Use `buttonText` for button text (embedded)
+   - Use `groupName_fieldName` for grouping
+3. Minimize field count (aim for 3-6 fields)
+4. Document the model with clear labels
+
+**Return to calling skill with:**
+- The `_blockname.json` content
+- Expected row structure (X visible rows from Y model fields)
+- Notes about embedded fields and grouping
+
+**Then STOP - do not proceed to Steps 1-4 below. Those steps are for document authoring only.**
+
+---
+
+### Document Authoring Workflow (Steps 1-4)
+
+**The steps below apply ONLY to document-based authoring projects (Google Docs/SharePoint).
+If you are working on a Universal Editor project, you should have already completed Step 0.1 and stopped.**
 
 ### Step 1: Identify the Canonical Model Type(s)
 
@@ -158,8 +224,14 @@ Provide the content model back to the calling skill (or user) in this format:
 
 ## Resources
 
+**For All Projects:**
+- `resources/advanced-scenarios.md` - Nested blocks, complex patterns, edge cases
+
+**For Document Authoring (Google Docs/SharePoint):**
 - `resources/canonical-models.md` - The 4 canonical model types with detailed examples and best practices
-- `resources/advanced-scenarios.md` - Supporting multiple models, progressive enhancement, and complex patterns
+
+**For Universal Editor (AEM as a Cloud Service):**
+- `resources/universal-editor-models.md` - Complete guide to component models, field types, naming conventions, row-per-field structure
 
 ## Example Workflow
 
