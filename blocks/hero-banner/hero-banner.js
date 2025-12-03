@@ -15,9 +15,9 @@ export default async function decorate(block) {
 
   // Extract values from cells based on the model definition order
   const picture = cells[0]?.querySelector('picture');
-  const titleText = cells[2]?.textContent?.trim() || '';
-  const subtitleText = cells[3]?.textContent?.trim() || '';
-  const richText = cells[4]; // This contains description and CTAs
+  const titleText = cells[1]?.textContent?.trim() || '';
+  const subtitleText = cells[2]?.textContent?.trim() || '';
+  const richText = cells[3]; // This contains description and CTAs
 
   // Clear the block
   block.textContent = '';
