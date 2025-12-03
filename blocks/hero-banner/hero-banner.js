@@ -3,95 +3,101 @@
  * @param {Element} block the hero-banner block element
  */
 export default async function decorate(block) {
-  // Extract elements using semantic selectors
-  const picture = div.querySelector('picture');
-  const h1 = block.querySelector('h1');
-  const h2 = block.querySelector('h2');
-  const links = block.querySelectorAll('a');
+  // Universal Editor creates block content as rows with divs
+  // Structure: block > div (row) > div (cells)
+  // Expected cells: [image, imageAlt, title, subtitle, text]
 
-  // Create the hero-banner structure
-  const heroContent = document.createElement('div');
-  heroContent.className = 'hero-banner-content';
+  const rows = [...block.children];
+  if (rows.length === 0) return;
 
-  // Add background image
+  // Get the first (and typically only) row of content
+  const cells = [...rows[0].children];
+
+  // Extract values from cells based on the model definition order
+  const picture = cells[0]?.querySelector('picture');
+  const titleText = cells[2]?.textContent?.trim() || '';
+  const subtitleText = cells[3]?.textContent?.trim() || '';
+  const richText = cells[4]; // This contains description and CTAs
+
+  // Clear the block
+  block.textContent = '';
+
+  // Add background image if present
   if (picture) {
     const heroBackground = document.createElement('div');
     heroBackground.className = 'hero-banner-background';
     heroBackground.append(picture);
-    block.prepend(heroBackground);
+    block.append(heroBackground);
   }
 
-  // Add text content wrapper
+  // Create content wrapper
+  const heroContent = document.createElement('div');
+  heroContent.className = 'hero-banner-content';
+
   const heroText = document.createElement('div');
   heroText.className = 'hero-banner-text';
 
-  // Add title
-  if (h1) {
+  // Create and add title (H1)
+  if (titleText) {
+    const h1 = document.createElement('h1');
     h1.className = 'hero-banner-title';
+    h1.textContent = titleText;
     heroText.append(h1);
   }
 
-  // Add subtitle
-  if (h2) {
+  // Create and add subtitle (H2)
+  if (subtitleText) {
+    const h2 = document.createElement('h2');
     h2.className = 'hero-banner-subtitle';
+    h2.textContent = subtitleText;
     heroText.append(h2);
   }
 
-  // Collect all remaining content (paragraphs, etc.) that aren't titles
-  // Don't include elements we've already moved
-  const remainingContent = [...block.querySelectorAll('p, div > *')]
-    .filter((el) => el !== h1 && el !== h2 && !el.closest('.hero-banner-background'));
-
-  // Create description wrapper
-  if (remainingContent.length > 0) {
+  // Add description and CTAs from rich text field
+  if (richText) {
     const description = document.createElement('div');
     description.className = 'hero-banner-description';
-    remainingContent.forEach((el) => {
-      // Skip if element only contains links (CTAs)
-      if (el.tagName === 'P' && el.querySelectorAll('a').length > 0 && !el.textContent.trim().replace(/\s+/g, ' ').match(/[^\s]/)) {
-        // This paragraph only has links, skip it for description
-      } else if (el.tagName === 'P' && el.querySelector('a')) {
-        // This paragraph has both text and links - extract text only
-        const textNode = document.createElement('p');
-        textNode.innerHTML = el.innerHTML.replace(/<a[^>]*>.*?<\/a>/gi, '').trim();
-        if (textNode.textContent.trim()) {
-          description.append(textNode);
+
+    // Extract paragraphs (description)
+    const paragraphs = richText.querySelectorAll('p');
+    paragraphs.forEach((p) => {
+      if (!p.querySelector('a') || p.textContent.trim().length > 0) {
+        const descPara = p.cloneNode(true);
+        // Remove links from description paragraphs
+        descPara.querySelectorAll('a').forEach((a) => a.remove());
+        if (descPara.textContent.trim()) {
+          description.append(descPara);
         }
-      } else if (!el.querySelector('a')) {
-        description.append(el);
       }
     });
+
     if (description.children.length > 0) {
       heroText.append(description);
     }
-  }
 
-  // Add CTAs
-  if (links.length > 0) {
-    const ctaWrapper = document.createElement('div');
-    ctaWrapper.className = 'hero-banner-ctas';
+    // Extract CTAs (links)
+    const links = richText.querySelectorAll('a');
+    if (links.length > 0) {
+      const ctaWrapper = document.createElement('div');
+      ctaWrapper.className = 'hero-banner-ctas';
 
-    links.forEach((link, index) => {
-      // First link is primary, second is secondary
-      if (index === 0) {
-        link.className = 'button primary';
-      } else if (index === 1) {
-        link.className = 'button secondary';
-      } else {
-        link.className = 'button';
-      }
-      ctaWrapper.append(link);
-    });
+      links.forEach((link, index) => {
+        const ctaLink = link.cloneNode(true);
+        // First link is primary, second is secondary
+        if (index === 0) {
+          ctaLink.className = 'button primary';
+        } else if (index === 1) {
+          ctaLink.className = 'button secondary';
+        } else {
+          ctaLink.className = 'button';
+        }
+        ctaWrapper.append(ctaLink);
+      });
 
-    heroText.append(ctaWrapper);
+      heroText.append(ctaWrapper);
+    }
   }
 
   heroContent.append(heroText);
-
-  // Replace block content with new structure
-  block.textContent = '';
-  if (block.querySelector('.hero-banner-background')) {
-    block.append(block.querySelector('.hero-banner-background'));
-  }
   block.append(heroContent);
 }
