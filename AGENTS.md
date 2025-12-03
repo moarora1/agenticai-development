@@ -321,16 +321,8 @@ The block javascript should export a default function which is called to perform
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
-  // For Universal Editor projects:
-  // 1. Extract content from ROWS (not cells)
-  //    const rows = [...block.children];
-  //    const picture = rows[0]?.querySelector('picture');
-  //    const titleText = rows[1]?.textContent?.trim();
-  //
-  // 2. Create semantic HTML from plain text fields
-  //    const h1 = document.createElement('h1');
-  //    h1.textContent = titleText;
-  //
+  // 1. Load dependencies
+  // 2. Extract configuration, if applicable
   // 3. Transform DOM to final structure
   // 4. Add event listeners
   // 5. Set loaded status
