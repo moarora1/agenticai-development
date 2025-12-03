@@ -226,5 +226,17 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "twitter",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "url",
+        "label": "Twitter Profile or Timeline URL",
+        "description": "Enter a Twitter/X profile URL, username (with or without @), or timeline URL"
+      }
+    ]
   }
 ]
