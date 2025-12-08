@@ -23,6 +23,8 @@ The repository provides the basic structure, blocks, and configuration needed to
 - Run linting: `npm run lint`
 - Fix linting issues: `npm run lint:fix`
 
+<!-- upskill:structure:start -->
+
 ## Project Structure
 
 ```
@@ -43,7 +45,7 @@ The repository provides the basic structure, blocks, and configuration needed to
 ├── head.html        # Global HTML head content
 └── 404.html         # Custom 404 page
 ```
-
+<!-- upskill:structure:end -->
 ## Code Style Guidelines
 
 ### JavaScript
