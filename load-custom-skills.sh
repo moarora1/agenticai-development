@@ -610,11 +610,82 @@ merge_agents_md() {
     return 0
 }
 
+usage() {
+    cat <<EOF
+Usage: $PROGRAM_NAME [OPTIONS]
+
+Load and merge custom skills from a GitHub repository.
+
+OPTIONS:
+    -r, --repo REPO          GitHub repository (format: owner/repo)
+                            Default: moarora1/agenticai-development
+    -b, --branch BRANCH      Branch name to clone
+                            Default: agents-skills-update
+    -s, --skills-path PATH   Relative path to skills directory in repo
+                            Default: .claude/skills
+    -d, --dest-dir DIR       Destination directory for merged skills
+                            Default: .claude/skills
+    -h, --help              Show this help message
+    -v, --version           Show version information
+
+EXAMPLES:
+    # Use default settings
+    $PROGRAM_NAME
+
+    # Use custom repository and branch
+    $PROGRAM_NAME --repo myorg/custom-skills --branch main
+
+    # Specify all options
+    $PROGRAM_NAME -r myorg/skills -b production -s skills -d .custom/skills
+
+EOF
+    exit 0
+}
+
+show_version() {
+    echo "$PROGRAM_NAME version $VERSION"
+    exit 0
+}
+
 main() {
+    # Default values
     local repo="moarora1/agenticai-development"
     local branch="agents-skills-update"
     local skills_rel_path=".claude/skills"
     local dest_skills_dir=".claude/skills"
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -r|--repo)
+                repo="$2"
+                shift 2
+                ;;
+            -b|--branch)
+                branch="$2"
+                shift 2
+                ;;
+            -s|--skills-path)
+                skills_rel_path="$2"
+                shift 2
+                ;;
+            -d|--dest-dir)
+                dest_skills_dir="$2"
+                shift 2
+                ;;
+            -h|--help)
+                usage
+                ;;
+            -v|--version)
+                show_version
+                ;;
+            *)
+                print_error "Unknown option: $1"
+                echo "Use --help for usage information"
+                exit 1
+                ;;
+        esac
+    done
     
     print_header "Loading Custom Skills from $repo"
     

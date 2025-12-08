@@ -114,18 +114,67 @@ After successful setup, you can:
 The script automatically loads skills from two sources:
 
 1. **Adobe Skills** - Base skills from `adobe/helix-website` repository
-2. **Custom Skills** - Project-specific skills from `moarora1/agenticai-development` repository
+2. **Custom Skills** - Project-specific skills from a configurable repository (default: `moarora1/agenticai-development`)
 
 ### How Skills are Merged
 
-The custom skills loader uses a **merge strategy** rather than overwriting:
+The custom skills loader uses a **3-way merge strategy** rather than overwriting:
 
 - ✅ New skills are added to `.claude/skills/`
 - ✅ New files within existing skills are added
-- ✅ Existing files are **preserved** (not overwritten)
+- ✅ Existing files are **intelligently merged** using git merge-file
 - ✅ Both Adobe and custom skills coexist
+- ✅ Preserves local changes while incorporating updates
 
 This ensures that Adobe skills remain intact while adding project-specific customizations.
+
+### Configuring Custom Skills Repository
+
+You can configure which repository and branch to load custom skills from using environment variables:
+
+#### Using Environment Variables
+
+```bash
+# Set environment variables before running the setup script
+export CUSTOM_SKILLS_REPO="myorg/my-custom-skills"
+export CUSTOM_SKILLS_BRANCH="main"
+export CUSTOM_SKILLS_PATH=".claude/skills"
+export CUSTOM_SKILLS_DEST=".claude/skills"
+
+# Then run the setup
+./aem-agenticai-setup.sh
+```
+
+#### Using Direct Script Invocation
+
+You can also run the `load-custom-skills.sh` script directly with command-line arguments:
+
+```bash
+# Use default settings (moarora1/agenticai-development)
+./.agents/load-custom-skills.sh
+
+# Use custom repository and branch
+./.agents/load-custom-skills.sh --repo myorg/my-skills --branch main
+
+# Specify all options
+./.agents/load-custom-skills.sh \
+  --repo myorg/my-skills \
+  --branch production \
+  --skills-path .claude/skills \
+  --dest-dir .claude/skills
+
+# Show help
+./.agents/load-custom-skills.sh --help
+```
+
+#### Configuration Options
+
+| Option | Environment Variable | Default Value | Description |
+|--------|---------------------|---------------|-------------|
+| Repository | `CUSTOM_SKILLS_REPO` | `moarora1/agenticai-development` | GitHub repository (format: owner/repo) |
+| Branch | `CUSTOM_SKILLS_BRANCH` | `agents-skills-update` | Branch to clone from |
+| Skills Path | `CUSTOM_SKILLS_PATH` | `.claude/skills` | Relative path to skills in the repo |
+| Destination | `CUSTOM_SKILLS_DEST` | `.claude/skills` | Local directory for merged skills |
 
 ### Reloading Skills
 
@@ -134,9 +183,13 @@ To reload Adobe skills:
 gh upskill adobe/helix-website
 ```
 
-To reload custom skills (merges, doesn't overwrite):
+To reload custom skills (performs 3-way merge, doesn't overwrite):
 ```bash
+# Using defaults
 ./.agents/load-custom-skills.sh
+
+# From a different repository
+./.agents/load-custom-skills.sh --repo myorg/skills --branch main
 ```
 
 ### Discovering Available Skills
@@ -211,8 +264,11 @@ ls .claude/skills/
 # Ensure you're authenticated with GitHub
 gh auth login
 
-# Load custom skills (merges with existing)
+# Load custom skills (performs 3-way merge with existing)
 ./.agents/load-custom-skills.sh
+
+# Load from a different repository
+./.agents/load-custom-skills.sh --repo myorg/custom-skills --branch main
 
 # Verify skills loaded
 ./.agents/discover-skills
@@ -220,10 +276,16 @@ gh auth login
 
 ### Merge conflicts
 
-The custom skills loader uses a **merge strategy**:
-- Existing files are never overwritten
-- Only new files and directories are added
-- If you want to update an existing skill file, manually delete it first, then re-run the loader
+The custom skills loader uses a **3-way merge strategy** powered by git merge-file:
+- Uses common ancestor (base) to intelligently merge changes
+- Preserves local modifications while incorporating remote updates
+- Automatically resolves non-conflicting changes
+- For conflicts, uses smart fallback strategy (appends new content)
+- Existing content is never blindly overwritten
+
+If you want to force-reset a skill file to the remote version:
+1. Delete the local file: `rm .claude/skills/{skill-name}/file.md`
+2. Re-run the loader: `./.agents/load-custom-skills.sh`
 
 ## Manual Installation Alternative
 

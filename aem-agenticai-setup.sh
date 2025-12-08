@@ -206,10 +206,22 @@ load_adobe_skills() {
 load_custom_skills() {
     print_header "Loading custom skills"
     
+    # Allow environment variables to override defaults
+    local custom_repo="${CUSTOM_SKILLS_REPO:-moarora1/agenticai-development}"
+    local custom_branch="${CUSTOM_SKILLS_BRANCH:-agents-skills-update}"
+    local custom_skills_path="${CUSTOM_SKILLS_PATH:-.claude/skills}"
+    local custom_dest_dir="${CUSTOM_SKILLS_DEST:-.claude/skills}"
+    
     # Check if the custom skills loader script exists
     if [[ -f "load-custom-skills.sh" ]]; then
         print_info "Running custom skills loader..."
-        if bash load-custom-skills.sh; then
+        print_info "Repository: $custom_repo (branch: $custom_branch)"
+        
+        if bash load-custom-skills.sh \
+            --repo "$custom_repo" \
+            --branch "$custom_branch" \
+            --skills-path "$custom_skills_path" \
+            --dest-dir "$custom_dest_dir"; then
             print_success "Custom skills merged successfully"
         else
             print_warning "Failed to load custom skills. You can manually run: load-custom-skills.sh"
