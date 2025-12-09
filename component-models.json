@@ -208,6 +208,26 @@
         "description": "Text for the CTA button"
       },
       {
+        "component": "select",
+        "name": "contentblock_textAlign",
+        "label": "Text Alignment",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Left (Default)",
+            "value": ""
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      {
         "component": "reference",
         "name": "image",
         "label": "Image"
@@ -231,26 +251,6 @@
           {
             "name": "Left",
             "value": "left"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "contentblock_textAlign",
-        "label": "Text Alignment",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Left (Default)",
-            "value": ""
-          },
-          {
-            "name": "Center",
-            "value": "center"
-          },
-          {
-            "name": "Right",
-            "value": "right"
           }
         ]
       },

@@ -4,39 +4,31 @@
  * and image in a two-column layout with configurable positioning and alignment.
  *
  * Due to element grouping (contentblock_ prefix), the structure is:
- * Row 0: contentblock group (heading, text, cta, ctaText as child divs)
+ * Row 0: contentblock group (heading, text, cta, ctaText, textAlign as child divs)
  * Row 1: image (with imageAlt embedded)
  * Row 2: imagePosition
- * Row 3: contentblock_textAlign
- * Row 4: imageAlign
+ * Row 3: imageAlign
  */
 
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // Row 0: contentblock group contains heading, text, cta, ctaText
+  // Row 0: contentblock group contains heading, text, cta, ctaText, textAlign
   const contentblockGroup = rows[0];
   // Row 1: image (with imageAlt)
   const imageRow = rows[1];
   // Row 2: imagePosition
   const imagePositionRow = rows[2];
-  // Row 3: contentblock_textAlign
-  const textAlignRow = rows[3];
-  // Row 4: imageAlign
-  const imageAlignRow = rows[4];
+  // Row 3: imageAlign
+  const imageAlignRow = rows[3];
 
   // Get configuration values
   const imagePosition = imagePositionRow?.textContent.trim() || '';
-  const textAlign = textAlignRow?.textContent.trim() || '';
   const imageAlign = imageAlignRow?.textContent.trim() || '';
 
   // Apply variant classes
   if (imagePosition === 'left') {
     block.classList.add('contentblock-image-left');
-  }
-
-  if (textAlign) {
-    block.classList.add(`contentblock-text-${textAlign}`);
   }
 
   if (imageAlign) {
@@ -55,6 +47,13 @@ export default function decorate(block) {
     // groupDivs[1] = text
     // groupDivs[2] = cta
     // groupDivs[3] = ctaText (embedded, won't create visible row)
+    // groupDivs[4] = textAlign
+
+    // Get textAlign value from grouped field
+    const textAlign = groupDivs[4]?.textContent.trim() || '';
+    if (textAlign) {
+      block.classList.add(`contentblock-text-${textAlign}`);
+    }
 
     // Add heading
     if (groupDivs[0]) {
