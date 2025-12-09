@@ -1,6 +1,6 @@
 # AEM Agentic AI Setup Script
 
-This set1. **OS Detection**: Identifies your operating system (macOS or Linux)
+1. **OS Detection**: Identifies your operating system (macOS or Linux)
 2. **Homebrew Check** (macOS only): Installs Homebrew if not present
 3. **Dependency Checks**: Verifies if each required tool is installed
 4. **nvm Installation**: Installs Node Version Manager if not present
