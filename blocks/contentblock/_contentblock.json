@@ -18,21 +18,21 @@
     "id": "contentblock",
     "fields": [
       {
-        "component": "text-input",
+        "component": "text",
         "valueType": "string",
         "name": "eyebrow",
         "label": "Eyebrow Text",
         "description": "Small text above the heading (e.g., 'What's new')"
       },
       {
-        "component": "text-input",
+        "component": "text",
         "valueType": "string",
         "name": "heading",
         "label": "Heading",
         "required": true
       },
       {
-        "component": "richtext-single",
+        "component": "richtext",
         "name": "text",
         "label": "Description",
         "valueType": "string"
@@ -43,7 +43,7 @@
         "label": "Call to Action Link"
       },
       {
-        "component": "text-input",
+        "component": "text",
         "valueType": "string",
         "name": "ctaText",
         "label": "Button Text",
@@ -55,7 +55,7 @@
         "label": "Image"
       },
       {
-        "component": "text-input",
+        "component": "text",
         "valueType": "string",
         "name": "imageAlt",
         "label": "Image Alt Text"
