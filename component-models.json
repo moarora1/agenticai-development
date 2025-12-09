@@ -215,4 +215,52 @@
       }
     ]
   }
+  {
+    "id": "contentblock",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "eyebrow",
+        "label": "Eyebrow Text",
+        "description": "Small text above the heading (e.g., 'What's new')"
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "required": true
+      },
+      {
+        "component": "richtext-single",
+        "name": "text",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "cta",
+        "label": "Call to Action Link"
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "ctaText",
+        "label": "Button Text",
+        "description": "Text for the CTA button"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image"
+      },
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text"
+      }
+    ]
+  }
 ]
