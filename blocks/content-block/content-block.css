@@ -1,0 +1,135 @@
+/* Content Block Styles */
+.content-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* Content Column (Left) */
+.content-block-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  background-color: var(--color-background-dark, #2c3e50);
+  color: var(--color-text-light, #fff);
+}
+
+/* Eyebrow Text */
+.content-block-eyebrow {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+/* Heading */
+.content-block-heading h2 {
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 24px;
+}
+
+/* Description Text */
+.content-block-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  opacity: 0.9;
+}
+
+.content-block-text p {
+  margin: 0;
+}
+
+/* CTA Button */
+.content-block-cta-wrapper {
+  margin-top: auto;
+}
+
+.content-block-cta {
+  display: inline-block;
+  padding: 14px 32px;
+  background-color: var(--color-button-background, #fff);
+  color: var(--color-button-text, #2c3e50);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.content-block-cta:hover {
+  background-color: var(--color-button-hover, #f0f0f0);
+  transform: translateY(-2px);
+}
+
+/* Image Column (Right) */
+.content-block-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.content-block-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.content-block-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsive Design */
+@media (width <= 900px) {
+  .content-block {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .content-block-content {
+    padding: 40px 24px;
+    order: 2;
+  }
+
+  .content-block-image {
+    order: 1;
+    min-height: 300px;
+  }
+
+  .content-block-heading h2 {
+    font-size: 36px;
+  }
+}
+
+@media (width <= 600px) {
+  .content-block-content {
+    padding: 32px 20px;
+  }
+
+  .content-block-heading h2 {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .content-block-text {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .content-block-eyebrow {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .content-block-cta {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}
