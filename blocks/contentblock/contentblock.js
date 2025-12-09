@@ -28,11 +28,7 @@ export default function decorate(block) {
   } else if (rows.length === 4) {
     // No eyebrow text
     [headingRow, textRow, ctaRow, imageRow] = rows;
-  } else {
-    // Unexpected structure - log warning and try to handle gracefully
-    console.warn('Content block has unexpected number of rows:', rows.length);
-    [headingRow, textRow, ctaRow, imageRow] = rows;
-  }
+  } 
 
   // Create content wrapper (left column)
   const contentWrapper = document.createElement('div');

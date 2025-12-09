@@ -20,13 +20,6 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "eyebrow",
-        "label": "Eyebrow Text",
-        "description": "Small text above the heading (e.g., 'What's new')"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
         "name": "heading",
         "label": "Heading",
         "required": true
