@@ -16,9 +16,10 @@
       "fragment",
       "cards",
       "hero",
+      "heading",
       "embed",
-      "contentblock",
-      "twitter"
+      "twitter",
+      "contentblock"
     ]
   },
   {
@@ -40,6 +41,12 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "heading"
     ]
   }
 ]

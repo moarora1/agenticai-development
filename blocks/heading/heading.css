@@ -1,0 +1,113 @@
+/* Default heading block styles */
+.heading {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.heading h1,
+.heading h2,
+.heading h3,
+.heading h4,
+.heading h5,
+.heading h6 {
+  margin: 0;
+  font-family: var(--heading-font-family, var(--body-font-family));
+  font-weight: var(--heading-font-weight, 700);
+  line-height: 1.2;
+  color: var(--heading-color, var(--text-color));
+}
+
+/* Default heading sizes */
+.heading h1 {
+  font-size: var(--heading-font-size-xxl, 3rem);
+}
+
+.heading h2 {
+  font-size: var(--heading-font-size-xl, 2.5rem);
+}
+
+.heading h3 {
+  font-size: var(--heading-font-size-l, 2rem);
+}
+
+.heading h4 {
+  font-size: var(--heading-font-size-m, 1.5rem);
+}
+
+.heading h5 {
+  font-size: var(--heading-font-size-s, 1.25rem);
+}
+
+.heading h6 {
+  font-size: var(--heading-font-size-xs, 1rem);
+}
+
+/* Style Variant: Accent */
+.heading-accent {
+  text-align: center;
+  border-bottom: 3px solid var(--accent-color, #06c);
+  padding-bottom: 1rem;
+}
+
+.heading-accent h1,
+.heading-accent h2,
+.heading-accent h3,
+.heading-accent h4,
+.heading-accent h5,
+.heading-accent h6 {
+  color: var(--accent-color, #06c);
+}
+
+/* Style Variant: Large */
+.heading-large h1 { font-size: 4rem; }
+.heading-large h2 { font-size: 3.5rem; }
+.heading-large h3 { font-size: 3rem; }
+.heading-large h4 { font-size: 2.5rem; }
+.heading-large h5 { font-size: 2rem; }
+.heading-large h6 { font-size: 1.5rem; }
+
+/* Style Variant: Subtle */
+.heading-subtle {
+  opacity: 0.8;
+}
+
+.heading-subtle h1,
+.heading-subtle h2,
+.heading-subtle h3,
+.heading-subtle h4,
+.heading-subtle h5,
+.heading-subtle h6 {
+  font-weight: 400;
+  color: var(--text-color-secondary, #666);
+}
+
+/* Responsive adjustments */
+@media (width <= 900px) {
+  .heading h1 { font-size: 2.5rem; }
+  .heading h2 { font-size: 2rem; }
+  .heading h3 { font-size: 1.75rem; }
+  .heading h4 { font-size: 1.5rem; }
+  
+  .heading-large h1 { font-size: 3rem; }
+  .heading-large h2 { font-size: 2.5rem; }
+  .heading-large h3 { font-size: 2rem; }
+  .heading-large h4 { font-size: 1.75rem; }
+}
+
+@media (width <= 600px) {
+  .heading {
+    margin: 1.5rem 0;
+  }
+
+  .heading h1 { font-size: 2rem; }
+  .heading h2 { font-size: 1.75rem; }
+  .heading h3 { font-size: 1.5rem; }
+  .heading h4 { font-size: 1.25rem; }
+  .heading h5 { font-size: 1.125rem; }
+  .heading h6 { font-size: 1rem; }
+
+  .heading-large h1 { font-size: 2.5rem; }
+  .heading-large h2 { font-size: 2rem; }
+  .heading-large h3 { font-size: 1.75rem; }
+  .heading-large h4 { font-size: 1.5rem; }
+}

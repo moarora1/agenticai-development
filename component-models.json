@@ -180,6 +180,47 @@
     ]
   },
   {
+    "id": "contentblock",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "cta",
+        "label": "Call to Action Link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaText",
+        "label": "Button Text",
+        "description": "Text for the CTA button"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text"
+      }
+    ]
+  },
+  {
     "id": "embed",
     "fields": [
       {
@@ -198,6 +239,74 @@
         "component": "aem-content",
         "name": "reference",
         "label": "Reference"
+      }
+    ]
+  },
+  {
+    "id": "heading",
+    "fields": [
+      {
+        "component": "text-input",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading Text",
+        "required": true
+      },
+      {
+        "component": "select",
+        "name": "headingLevel",
+        "label": "Heading Level",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Style Variant",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Accent",
+            "value": "accent"
+          },
+          {
+            "name": "Large",
+            "value": "large"
+          },
+          {
+            "name": "Subtle",
+            "value": "subtle"
+          }
+        ]
       }
     ]
   },
@@ -236,47 +345,6 @@
         "name": "url",
         "label": "Twitter Profile or Timeline URL",
         "description": "Enter a Twitter/X profile URL, username (with or without @), or timeline URL"
-      }
-    ]
-  },
-  {
-    "id": "contentblock",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "required": true
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "label": "Description",
-        "valueType": "string"
-      },
-      {
-        "component": "aem-content",
-        "name": "cta",
-        "label": "Call to Action Link"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaText",
-        "label": "Button Text",
-        "description": "Text for the CTA button"
-      },
-      {
-        "component": "reference",
-        "name": "image",
-        "label": "Image"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text"
       }
     ]
   }
