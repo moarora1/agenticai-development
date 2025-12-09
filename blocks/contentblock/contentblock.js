@@ -1,52 +1,64 @@
 /**
  * Content Block
- * Displays content with optional eyebrow text, heading, description,
- * call-to-action button, and image in a two-column layout.
+ * Displays content with heading, description, call-to-action button,
+ * and image in a two-column layout with configurable positioning and alignment.
+ *
+ * Due to element grouping (contentblock_ prefix), the structure is:
+ * Row 0: contentblock group (heading, text, cta, ctaText as child divs)
+ * Row 1: image (with imageAlt embedded)
+ * Row 2: imagePosition
+ * Row 3: contentblock_textAlign
+ * Row 4: imageAlign
  */
 
 export default function decorate(block) {
-  // Row structure (Universal Editor row-per-field):
-  // Row 0: eyebrow (optional)
-  // Row 1: heading
-  // Row 2: text/description
-  // Row 3: cta link (with ctaText embedded)
-  // Row 4: image (with imageAlt embedded)
-
   const rows = [...block.children];
 
-  // Detect content structure - eyebrow is optional
-  let eyebrowRow = null;
-  let headingRow;
-  let textRow;
-  let ctaRow;
-  let imageRow;
+  // Row 0: contentblock group contains heading, text, cta, ctaText
+  const contentblockGroup = rows[0];
+  // Row 1: image (with imageAlt)
+  const imageRow = rows[1];
+  // Row 2: imagePosition
+  const imagePositionRow = rows[2];
+  // Row 3: contentblock_textAlign
+  const textAlignRow = rows[3];
+  // Row 4: imageAlign
+  const imageAlignRow = rows[4];
 
-  // Check if first row is eyebrow (typically short text)
-  if (rows.length === 5) {
-    // Full content with eyebrow
-    [eyebrowRow, headingRow, textRow, ctaRow, imageRow] = rows;
-  } else if (rows.length === 4) {
-    // No eyebrow text
-    [headingRow, textRow, ctaRow, imageRow] = rows;
+  // Get configuration values
+  const imagePosition = imagePositionRow?.textContent.trim() || '';
+  const textAlign = textAlignRow?.textContent.trim() || '';
+  const imageAlign = imageAlignRow?.textContent.trim() || '';
+
+  // Apply variant classes
+  if (imagePosition === 'left') {
+    block.classList.add('contentblock-image-left');
   }
 
-  // Create content wrapper (left column)
+  if (textAlign) {
+    block.classList.add(`contentblock-text-${textAlign}`);
+  }
+
+  if (imageAlign) {
+    block.classList.add(`contentblock-image-${imageAlign}`);
+  }
+
+  // Create content wrapper
   const contentWrapper = document.createElement('div');
   contentWrapper.className = 'contentblock-content';
 
-  // Add eyebrow if present
-  if (eyebrowRow) {
-    const eyebrow = eyebrowRow.querySelector('div');
-    if (eyebrow && eyebrow.textContent.trim()) {
-      eyebrow.className = 'contentblock-eyebrow';
-      contentWrapper.append(eyebrow);
-    }
-  }
+  // Extract fields from the contentblock group
+  if (contentblockGroup) {
+    const groupDivs = [...contentblockGroup.children[0].children];
 
-  // Add heading
-  if (headingRow) {
-    const heading = headingRow.querySelector('div');
-    if (heading) {
+    // groupDivs[0] = heading
+    // groupDivs[1] = text
+    // groupDivs[2] = cta
+    // groupDivs[3] = ctaText (embedded, won't create visible row)
+
+    // Add heading
+    if (groupDivs[0]) {
+      const heading = groupDivs[0];
       heading.className = 'contentblock-heading';
       // Wrap in h2 for semantic HTML
       const h2 = document.createElement('h2');
@@ -55,21 +67,17 @@ export default function decorate(block) {
       heading.append(h2);
       contentWrapper.append(heading);
     }
-  }
 
-  // Add text/description
-  if (textRow) {
-    const text = textRow.querySelector('div');
-    if (text) {
+    // Add text/description
+    if (groupDivs[1]) {
+      const text = groupDivs[1];
       text.className = 'contentblock-text';
       contentWrapper.append(text);
     }
-  }
 
-  // Add CTA button
-  if (ctaRow) {
-    const ctaCell = ctaRow.querySelector('div');
-    if (ctaCell) {
+    // Add CTA button
+    if (groupDivs[2]) {
+      const ctaCell = groupDivs[2];
       const link = ctaCell.querySelector('a');
       if (link) {
         link.className = 'contentblock-cta button primary';
@@ -79,7 +87,7 @@ export default function decorate(block) {
     }
   }
 
-  // Create image wrapper (right column)
+  // Create image wrapper
   const imageWrapper = document.createElement('div');
   imageWrapper.className = 'contentblock-image';
 
@@ -94,6 +102,18 @@ export default function decorate(block) {
   }
 
   // Clear block and rebuild with new structure
+  // Grid: content | separator | image (or reversed based on imagePosition)
   block.textContent = '';
-  block.append(contentWrapper, imageWrapper);
+
+  // Create separator
+  const separator = document.createElement('div');
+  separator.className = 'contentblock-separator';
+  separator.setAttribute('aria-hidden', 'true');
+
+  // Append in correct order based on imagePosition
+  if (imagePosition === 'left') {
+    block.append(imageWrapper, separator, contentWrapper);
+  } else {
+    block.append(contentWrapper, separator, imageWrapper);
+  }
 }

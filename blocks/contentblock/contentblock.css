@@ -1,10 +1,38 @@
 /* Content Block Styles */
 .contentblock {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 5px 1fr;
   gap: 0;
   min-height: 400px;
   overflow: hidden;
+  position: relative;
+}
+
+/* Vertical Separator */
+.contentblock::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 2.5px);
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #9d4edd 0%, #7b2cbf 100%);
+  z-index: 2;
+}
+
+/* Neon Wave Effect */
+.contentblock::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 200px;
+  background: radial-gradient(ellipse at center, rgb(157 78 221 / 30%) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Content Column (Left) */
@@ -13,8 +41,31 @@
   flex-direction: column;
   justify-content: center;
   padding: 60px;
-  background-color: var(--color-background-dark, #2c3e50);
+  background: linear-gradient(135deg, #2c4a5e 0%, #1e3a4a 100%);
   color: var(--color-text-light, #fff);
+  position: relative;
+  z-index: 1;
+}
+
+/* Separator Column (Middle) */
+.contentblock-separator {
+  position: relative;
+  background: linear-gradient(180deg, #9d4edd 0%, #7b2cbf 100%);
+  z-index: 2;
+}
+
+/* Neon glow on separator */
+.contentblock-separator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(180deg, #9d4edd 0%, #7b2cbf 100%);
+  filter: blur(10px);
+  opacity: 0.6;
 }
 
 /* Eyebrow Text */
@@ -71,12 +122,28 @@
 .contentblock-image {
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #5a189a 0%, #3c096c 50%, #240046 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Purple overlay on image */
+.contentblock-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgb(90 24 154 / 40%) 0%, rgb(60 9 108 / 50%) 50%, rgb(36 0 70 / 60%) 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .contentblock-image picture {
   display: block;
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 0;
 }
 
 .contentblock-image img {
@@ -84,13 +151,79 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  mix-blend-mode: luminosity;
+}
+
+/* Text Alignment Variants */
+.contentblock-text-center .contentblock-content {
+  text-align: center;
+}
+
+.contentblock-text-center .contentblock-cta-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.contentblock-text-right .contentblock-content {
+  text-align: right;
+}
+
+.contentblock-text-right .contentblock-cta-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Image Alignment Variants */
+.contentblock-image-top .contentblock-image {
+  align-items: flex-start;
+}
+
+.contentblock-image-top .contentblock-image img {
+  object-position: top;
+}
+
+.contentblock-image-bottom .contentblock-image {
+  align-items: flex-end;
+}
+
+.contentblock-image-bottom .contentblock-image img {
+  object-position: bottom;
+}
+
+/* Image Position: Left Variant */
+.contentblock-image-left {
+  grid-template-columns: 1fr 5px 1fr;
+}
+
+.contentblock-image-left .contentblock-content {
+  order: 3;
+}
+
+.contentblock-image-left .contentblock-separator {
+  order: 2;
+}
+
+.contentblock-image-left .contentblock-image {
+  order: 1;
 }
 
 /* Responsive Design */
 @media (width <= 900px) {
-  .contentblock {
+  .contentblock,
+  .contentblock-image-left {
     grid-template-columns: 1fr;
-    min-height: auto;
+  }
+
+  .contentblock::before {
+    display: none;
+  }
+
+  .contentblock::after {
+    display: none;
+  }
+
+  .contentblock-separator {
+    display: none;
   }
 
   .contentblock-content {
@@ -103,8 +236,28 @@
     min-height: 300px;
   }
 
+  /* Reset order for image-left on mobile */
+  .contentblock-image-left .contentblock-content {
+    order: 2;
+  }
+
+  .contentblock-image-left .contentblock-image {
+    order: 1;
+  }
+
   .contentblock-heading h2 {
     font-size: 36px;
+  }
+
+  /* Reset text alignment on mobile for better readability */
+  .contentblock-text-center .contentblock-content,
+  .contentblock-text-right .contentblock-content {
+    text-align: left;
+  }
+
+  .contentblock-text-center .contentblock-cta-wrapper,
+  .contentblock-text-right .contentblock-cta-wrapper {
+    display: block;
   }
 }
 

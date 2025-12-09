@@ -185,25 +185,25 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "heading",
+        "name": "contentblock_heading",
         "label": "Heading",
         "required": true
       },
       {
         "component": "richtext",
-        "name": "text",
+        "name": "contentblock_text",
         "label": "Description",
         "valueType": "string"
       },
       {
         "component": "aem-content",
-        "name": "cta",
+        "name": "contentblock_cta",
         "label": "Call to Action Link"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "ctaText",
+        "name": "contentblock_ctaText",
         "label": "Button Text",
         "description": "Text for the CTA button"
       },
@@ -217,6 +217,63 @@
         "valueType": "string",
         "name": "imageAlt",
         "label": "Image Alt Text"
+      },
+      {
+        "component": "select",
+        "name": "imagePosition",
+        "label": "Image Position",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Right (Default)",
+            "value": ""
+          },
+          {
+            "name": "Left",
+            "value": "left"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "contentblock_textAlign",
+        "label": "Text Alignment",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Left (Default)",
+            "value": ""
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "imageAlign",
+        "label": "Image Alignment",
+        "valueType": "string",
+        "description": "How the image should be positioned within its container",
+        "options": [
+          {
+            "name": "Center (Default)",
+            "value": ""
+          },
+          {
+            "name": "Top",
+            "value": "top"
+          },
+          {
+            "name": "Bottom",
+            "value": "bottom"
+          }
+        ]
       }
     ]
   },
