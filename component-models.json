@@ -142,6 +142,66 @@
     ]
   },
   {
+    "id": "actiontile",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "actiontile_subtitle",
+        "label": "Subtitle",
+        "description": "Purple accent badge text above heading"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "actiontile_heading",
+        "label": "Heading",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "actiontile_text",
+        "label": "Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "actiontile_primaryCta",
+        "label": "Primary CTA Link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "actiontile_primaryCtaText",
+        "label": "Primary Button Text",
+        "description": "Text for the primary CTA button"
+      },
+      {
+        "component": "aem-content",
+        "name": "actiontile_secondaryCta",
+        "label": "Secondary CTA Link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "actiontile_secondaryCtaText",
+        "label": "Secondary Button Text",
+        "description": "Text for the secondary CTA button (optional)"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text"
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {

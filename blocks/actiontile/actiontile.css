@@ -1,0 +1,190 @@
+/* Action Tile Styles - Adelaide University GTM Design System */
+.actiontile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+  overflow: hidden;
+  background: var(--colour-foundation-primary-dark, #0c0930);
+}
+
+/* Content Column (Left) */
+.actiontile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px 32px;
+  color: var(--colour-agnostic-neutral-white, #fff);
+}
+
+/* Subtitle (Purple Badge) */
+.actiontile-subtitle {
+  background: var(--colour-foundation-accent-dark, #6956cc);
+  padding: 8px;
+  width: fit-content;
+  font-family: 'National 2 Condensed', var(--heading-font-family, sans-serif);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--colour-agnostic-neutral-white, #fff);
+}
+
+/* Heading */
+.actiontile-heading h2 {
+  font-family: 'National 2 Condensed', var(--heading-font-family, sans-serif);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 40px;
+  margin: 0;
+  color: var(--colour-agnostic-neutral-white, #fff);
+}
+
+/* Description Text */
+.actiontile-text {
+  font-family: 'Roboto Serif', var(--body-font-family, serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--colour-agnostic-neutral-white, #fff);
+}
+
+.actiontile-text p {
+  margin: 0;
+}
+
+/* Button Group */
+.actiontile-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* CTA Buttons */
+.actiontile-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-family: 'Roboto Serif', var(--body-font-family, serif);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Primary Button */
+.actiontile-cta.primary {
+  background: var(--colour-foundation-tertiary-default, #1448ff);
+  color: var(--colour-agnostic-neutral-white, #fff);
+  border: none;
+}
+
+.actiontile-cta.primary:hover {
+  background: var(--colour-foundation-tertiary-hover, #0d35cc);
+  transform: translateY(-2px);
+}
+
+/* Secondary Button */
+.actiontile-cta.secondary {
+  background: transparent;
+  color: var(--colour-agnostic-neutral-white, #fff);
+  border: 2px solid var(--colour-agnostic-neutral-white, #fff);
+}
+
+.actiontile-cta.secondary:hover {
+  background: rgb(255 255 255 / 10%);
+  transform: translateY(-2px);
+}
+
+/* Image Column (Right) */
+.actiontile-image {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 483px;
+}
+
+.actiontile-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.actiontile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Responsive Design */
+@media (width <= 900px) {
+  .actiontile {
+    grid-template-columns: 1fr;
+  }
+
+  .actiontile-content {
+    order: 2;
+    padding: 32px 24px;
+  }
+
+  .actiontile-image {
+    order: 1;
+    min-height: 300px;
+  }
+
+  .actiontile-heading h2 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .actiontile-subtitle {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .actiontile-button-group {
+    flex-direction: column;
+  }
+
+  .actiontile-cta {
+    width: 100%;
+  }
+}
+
+@media (width <= 600px) {
+  .actiontile-content {
+    padding: 24px 20px;
+    gap: 16px;
+  }
+
+  .actiontile-heading h2 {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .actiontile-subtitle {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .actiontile-text {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .actiontile-cta {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .actiontile-image {
+    min-height: 250px;
+  }
+}
