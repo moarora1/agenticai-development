@@ -28,7 +28,7 @@ export default function decorate(block) {
   } else if (rows.length === 4) {
     // No eyebrow text
     [headingRow, textRow, ctaRow, imageRow] = rows;
-  } 
+  }
 
   // Create content wrapper (left column)
   const contentWrapper = document.createElement('div');
