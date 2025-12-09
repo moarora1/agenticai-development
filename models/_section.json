@@ -52,7 +52,8 @@
         "cards",
         "hero",
         "embed",
-        "twitter"
+        "twitter",
+        "contentblock"
       ]
     }
   ]
