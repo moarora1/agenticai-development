@@ -58,6 +58,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .alert-button {
@@ -74,6 +75,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  width: 100%;
 }
 
 /* Close Button */
@@ -255,10 +257,6 @@
   .alert-cta {
     width: 100%;
     margin-top: 8px;
-  }
-
-  .alert-button {
-    width: 100%;
   }
 
   .alert-close {
