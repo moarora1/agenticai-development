@@ -3,7 +3,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 /**
  * Decorate the download block
  * Expected structure:
- * Row 0: download group with 5 nested divs (title, description, tags, link, text)
+ * Row 0: download group with 5 nested divs (title, description, tags, ctaLink, cta)
  * Row 1: image (optional)
  * Row 2: imageAlt
  * Row 3: layout variant (vertical|horizontal)
@@ -19,8 +19,8 @@ export default function decorate(block) {
   const title = groupDivs[0]?.textContent.trim() || '';
   const description = groupDivs[1]?.textContent.trim() || '';
   const tags = groupDivs[2]?.textContent.trim() || '';
-  const downloadLink = groupDivs[3]?.textContent.trim() || '';
-  const downloadText = groupDivs[4]?.textContent.trim() || 'Download';
+  const ctaLink = groupDivs[3]?.textContent.trim() || '';
+  const cta = groupDivs[4]?.textContent.trim() || 'Download';
 
   // Extract image from row 1
   const imageCell = rows[1]?.children[0];
@@ -94,12 +94,12 @@ export default function decorate(block) {
   }
 
   // Add download button
-  if (downloadLink) {
+  if (ctaLink) {
     const buttonWrapper = document.createElement('div');
     buttonWrapper.className = 'download-button-wrapper';
 
     const button = document.createElement('a');
-    button.href = downloadLink;
+    button.href = ctaLink;
     button.className = 'download-button';
     button.setAttribute('download', '');
     button.setAttribute('aria-label', `Download ${title || 'file'}`);
@@ -112,7 +112,7 @@ export default function decorate(block) {
 
     // Add button text
     const buttonText = document.createElement('span');
-    buttonText.textContent = downloadText;
+    buttonText.textContent = cta;
     button.appendChild(buttonText);
 
     buttonWrapper.appendChild(button);

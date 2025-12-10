@@ -20,13 +20,13 @@
     },
     {
       "component": "reference",
-      "name": "download_link",
+      "name": "download_ctaLink",
       "label": "Download Link",
       "required": true
     },
     {
       "component": "text",
-      "name": "download_text",
+      "name": "download_cta",
       "label": "Download Button Text",
       "value": "Download"
     },
