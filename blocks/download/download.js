@@ -5,7 +5,8 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
  * Expected structure:
  * Row 0: download group with 5 nested divs (title, description, tags, link, text)
  * Row 1: image (optional)
- * Row 2: layout variant (vertical|horizontal)
+ * Row 2: imageAlt
+ * Row 3: layout variant (vertical|horizontal)
  * @param {Element} block
  */
 export default function decorate(block) {
@@ -25,10 +26,13 @@ export default function decorate(block) {
   const imageCell = rows[1]?.children[0];
   const picture = imageCell?.querySelector('picture');
   const img = imageCell?.querySelector('img');
-  const imageAlt = img?.getAttribute('alt') || '';
 
-  // Extract layout variant from row 2
-  const layoutCell = rows[2]?.children[0];
+  // Extract imageAlt from row 2
+  const imageAltCell = rows[2]?.children[0];
+  const imageAlt = imageAltCell?.textContent.trim() || img?.getAttribute('alt') || '';
+
+  // Extract layout variant from row 3
+  const layoutCell = rows[3]?.children[0];
   const layout = layoutCell?.textContent.trim() || 'vertical';
 
   // Clear the block
