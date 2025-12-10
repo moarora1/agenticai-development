@@ -1,0 +1,298 @@
+/* Alert Block */
+.alert {
+  width: 100%;
+  margin: 0;
+}
+
+.alert-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  position: relative;
+}
+
+/* Alert Icon */
+.alert-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.alert-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Alert Content */
+.alert-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.alert-title {
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0;
+}
+
+.alert-description {
+  font-family: var(--body-font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  margin: 0;
+}
+
+/* Alert CTA (Banner only) */
+.alert-cta {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.alert-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-family: var(--body-font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+/* Close Button */
+.alert-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  opacity: 0.7;
+}
+
+.alert-close:hover {
+  opacity: 1;
+}
+
+.alert-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Banner Type - Full width with more padding */
+.alert-banner .alert-container {
+  padding: 20px 32px;
+}
+
+/* Message Type - Compact inline style */
+.alert-message .alert-container {
+  padding: 12px 16px;
+  border-radius: 6px;
+}
+
+.alert-message .alert-title {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.alert-message .alert-description {
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* Theme: Neutral */
+.alert-neutral .alert-container {
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  color: #262626;
+}
+
+.alert-neutral .alert-icon {
+  color: #595959;
+}
+
+.alert-neutral .alert-button {
+  background: #262626;
+  color: #fff;
+}
+
+.alert-neutral .alert-button:hover {
+  background: #3d3d3d;
+}
+
+.alert-neutral .alert-close {
+  color: #595959;
+}
+
+/* Theme: Warning */
+.alert-warning .alert-container {
+  background: #fffbf0;
+  border: 1px solid #ffe58f;
+  color: #8c6d1f;
+}
+
+.alert-warning .alert-icon {
+  color: #faad14;
+}
+
+.alert-warning .alert-button {
+  background: #faad14;
+  color: #000;
+}
+
+.alert-warning .alert-button:hover {
+  background: #ffc53d;
+}
+
+.alert-warning .alert-close {
+  color: #8c6d1f;
+}
+
+/* Theme: Information */
+.alert-information .alert-container {
+  background: #e6f7ff;
+  border: 1px solid #91d5ff;
+  color: #003a8c;
+}
+
+.alert-information .alert-icon {
+  color: #1890ff;
+}
+
+.alert-information .alert-button {
+  background: #1890ff;
+  color: #fff;
+}
+
+.alert-information .alert-button:hover {
+  background: #40a9ff;
+}
+
+.alert-information .alert-close {
+  color: #003a8c;
+}
+
+/* Theme: Success */
+.alert-success .alert-container {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #135200;
+}
+
+.alert-success .alert-icon {
+  color: #52c41a;
+}
+
+.alert-success .alert-button {
+  background: #52c41a;
+  color: #fff;
+}
+
+.alert-success .alert-button:hover {
+  background: #73d13d;
+}
+
+.alert-success .alert-close {
+  color: #135200;
+}
+
+/* Theme: Error */
+.alert-error .alert-container {
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #a8071a;
+}
+
+.alert-error .alert-icon {
+  color: #f5222d;
+}
+
+.alert-error .alert-button {
+  background: #f5222d;
+  color: #fff;
+}
+
+.alert-error .alert-button:hover {
+  background: #ff4d4f;
+}
+
+.alert-error .alert-close {
+  color: #a8071a;
+}
+
+/* Responsive Design */
+@media (width <= 768px) {
+  .alert-banner .alert-container {
+    padding: 16px 20px;
+  }
+
+  .alert-container {
+    flex-wrap: wrap;
+  }
+
+  .alert-cta {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .alert-button {
+    width: 100%;
+  }
+
+  .alert-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+}
+
+@media (width <= 480px) {
+  .alert-banner .alert-container {
+    padding: 12px 16px;
+  }
+
+  .alert-message .alert-container {
+    padding: 10px 12px;
+  }
+
+  .alert-container {
+    gap: 12px;
+  }
+
+  .alert-title {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .alert-description {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .alert-button {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
