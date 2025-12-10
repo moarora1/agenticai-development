@@ -338,6 +338,66 @@
     ]
   },
   {
+    "id": "download",
+    "fields": [
+      {
+        "component": "text",
+        "name": "download_title",
+        "label": "Title",
+        "required": true
+      },
+      {
+        "component": "richtext",
+        "name": "download_description",
+        "label": "Description"
+      },
+      {
+        "component": "text",
+        "name": "download_tags",
+        "label": "Tags",
+        "description": "Comma-separated tags (e.g., PDF, 2.5MB, File format)"
+      },
+      {
+        "component": "reference",
+        "name": "download_link",
+        "label": "Download Link",
+        "required": true
+      },
+      {
+        "component": "text",
+        "name": "download_text",
+        "label": "Download Button Text",
+        "value": "Download"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Preview Image"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image Alt Text"
+      },
+      {
+        "component": "select",
+        "name": "layout",
+        "label": "Layout",
+        "options": [
+          {
+            "name": "vertical",
+            "value": "vertical"
+          },
+          {
+            "name": "horizontal",
+            "value": "horizontal"
+          }
+        ],
+        "value": "vertical"
+      }
+    ]
+  },
+  {
     "id": "embed",
     "fields": [
       {
