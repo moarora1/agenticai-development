@@ -49,11 +49,15 @@ export default function decorate(block) {
   container.setAttribute('role', 'alert');
   container.setAttribute('aria-live', 'polite');
 
+  // Create header wrapper for icon, content, and close button
+  const header = document.createElement('div');
+  header.className = 'alert-header';
+
   // Create icon element based on theme
   const icon = document.createElement('div');
   icon.className = 'alert-icon';
   icon.innerHTML = getIconForTheme(theme);
-  container.appendChild(icon);
+  header.appendChild(icon);
 
   // Create content wrapper
   const content = document.createElement('div');
@@ -75,23 +79,9 @@ export default function decorate(block) {
     content.appendChild(descEl);
   }
 
-  container.appendChild(content);
+  header.appendChild(content);
 
-  // Add CTA button (banner type only)
-  if (type === 'banner' && ctaText && ctaLink) {
-    const ctaWrapper = document.createElement('div');
-    ctaWrapper.className = 'alert-cta';
-
-    const ctaButton = document.createElement('a');
-    ctaButton.href = ctaLink;
-    ctaButton.className = 'alert-button';
-    ctaButton.textContent = ctaText;
-    ctaWrapper.appendChild(ctaButton);
-
-    container.appendChild(ctaWrapper);
-  }
-
-  // Add close button
+  // Add close button to header
   if (showClose) {
     const closeButton = document.createElement('button');
     closeButton.className = 'alert-close';
@@ -103,7 +93,23 @@ export default function decorate(block) {
       block.style.display = 'none';
     });
 
-    container.appendChild(closeButton);
+    header.appendChild(closeButton);
+  }
+
+  container.appendChild(header);
+
+  // Add CTA button (banner type only) - below the header
+  if (type === 'banner' && ctaText && ctaLink) {
+    const ctaWrapper = document.createElement('div');
+    ctaWrapper.className = 'alert-cta';
+
+    const ctaButton = document.createElement('a');
+    ctaButton.href = ctaLink;
+    ctaButton.className = 'alert-button';
+    ctaButton.textContent = ctaText;
+    ctaWrapper.appendChild(ctaButton);
+
+    container.appendChild(ctaWrapper);
   }
 
   block.appendChild(container);
