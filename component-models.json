@@ -272,7 +272,7 @@
         "valueType": "string"
       },
       {
-        "component": "reference",
+        "component": "aem-content",
         "name": "alert_ctaLink",
         "label": "CTA Link",
         "description": "Button link (Banner type only)"
