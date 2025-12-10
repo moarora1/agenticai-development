@@ -19,7 +19,7 @@
       "description": "Comma-separated tags (e.g., PDF, 2.5MB, File format)"
     },
     {
-      "component": "reference",
+      "component": "aem-content",
       "name": "download_ctaLink",
       "label": "Download Link",
       "required": true
